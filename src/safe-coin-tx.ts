@@ -81,7 +81,8 @@ export class SafeCoinTx {
 
     const totalGasUsed = this.#calculateGasUsed(result);
 
-    if (gasBudget) invariant(totalGasUsed <= gasBudget, 'Gas budget exceeded');
+    if (gasBudget)
+      invariant(totalGasUsed * -1n <= gasBudget, 'Gas budget exceeded');
 
     const balanceChangesMap = result.balanceChanges.reduce(
       (acc, change) => {
