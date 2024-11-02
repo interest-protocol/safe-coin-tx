@@ -120,7 +120,7 @@ export class SafeCoinTx {
     } else {
       invariant(
         balanceChangesMap[coinInType] >= coinInAmount,
-        'Too much coin was sold'
+        'The amount of coin sold does not match the amount of coin taken'
       );
       invariant(
         suiChangeAmount >= totalGasUsed,
@@ -131,7 +131,7 @@ export class SafeCoinTx {
     if (coinOutType && coinOutAmount) {
       invariant(
         balanceChangesMap[coinOutType] >= coinOutAmount,
-        'The amount of coin sold does not match the amount of coin bought'
+        'We expected to receive more coins'
       );
     }
   }
@@ -149,7 +149,7 @@ export class SafeCoinTx {
       ownedObjects.every((change) => {
         invariant(
           'objectType' in change,
-          'Object change is missing objectType property'
+          'Object change is missing the objectType property'
         );
 
         return change.objectType.startsWith(this.#coinType);
