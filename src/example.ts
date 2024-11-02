@@ -1,4 +1,4 @@
-import { SafeCoinTx } from './safe-coin';
+import { SafeCoinTx } from './safe-coin-tx';
 import dotenv from 'dotenv';
 import invariant from 'tiny-invariant';
 
