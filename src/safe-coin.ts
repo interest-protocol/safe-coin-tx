@@ -45,6 +45,13 @@ export class SafeCoinTx {
         transactionBlock: await tx.build({ client: this.#client }),
       });
 
+      log(result.effects.status);
+
+      invariant(
+        result.effects.status.status === 'success',
+        'Transaction failed'
+      );
+
       this.#verifyCoinBalanceChange(result, {
         coinInType,
         coinInAmount,
@@ -69,6 +76,8 @@ export class SafeCoinTx {
       coinOutAmount,
     }: Omit<CheckTxArgs, 'tx' | 'checkObjectChanges'>
   ) {
+    coinInAmount = coinInAmount * -1n;
+
     coinInType = normalizeStructTag(coinInType);
 
     const sender = normalizeSuiAddress(result.input.sender);
@@ -90,12 +99,14 @@ export class SafeCoinTx {
       {} as Record<string, bigint>
     );
 
-    const coinTypes = Object.keys(balanceChangesMap);
+    const negativeAmounts = Object.values(balanceChangesMap).filter(
+      (amounts) => 0n >= amounts
+    );
 
     const isCoinSoldSui = coinInType === this.#suiCoinType;
 
     invariant(
-      coinTypes.length === (isCoinSoldSui ? 2 : 3),
+      negativeAmounts.length === (isCoinSoldSui ? 1 : 2),
       'Too many coins were sold'
     );
 
@@ -103,16 +114,16 @@ export class SafeCoinTx {
 
     if (isCoinSoldSui) {
       invariant(
-        coinInAmount + totalGasUsed >= suiChangeAmount,
-        'The amount of Sui sold does not match the amount of Sui bought'
+        suiChangeAmount >= coinInAmount + totalGasUsed,
+        'The amount of Sui sold does not match the amount of Sui taken'
       );
     } else {
       invariant(
-        coinInAmount >= balanceChangesMap[coinInType],
+        balanceChangesMap[coinInType] >= coinInAmount,
         'Too much coin was sold'
       );
       invariant(
-        totalGasUsed >= balanceChangesMap[this.#suiCoinType],
+        balanceChangesMap[this.#suiCoinType] >= totalGasUsed,
         'Too much gas was used'
       );
     }
@@ -151,10 +162,11 @@ export class SafeCoinTx {
     const gasUsed = result.effects.gasUsed;
 
     return (
-      BigInt(gasUsed.computationCost) +
-      BigInt(gasUsed.storageCost) +
-      BigInt(gasUsed.nonRefundableStorageFee) -
-      BigInt(gasUsed.storageRebate)
+      (BigInt(gasUsed.computationCost) +
+        BigInt(gasUsed.storageCost) +
+        BigInt(gasUsed.nonRefundableStorageFee) -
+        BigInt(gasUsed.storageRebate)) *
+      -1n
     );
   }
 }

@@ -49,31 +49,33 @@ const hop_api_options: HopApiOptions = {
 
   // option to charge fees in sui when possible
   // instead of only the output token
-  charge_fees_in_sui: true,
+  charge_fees_in_sui: false,
 };
 
 const sdk = new HopApi(getFullnodeUrl('mainnet'), hop_api_options);
 
 const USDC_TYPE =
-  '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC';
-
+  '0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP';
 (async () => {
   const quote = await sdk.fetchQuote({
     token_in: SUI_TYPE_ARG,
     token_out: USDC_TYPE,
-    amount_in: 1_000_000_000n,
+    amount_in: 3_000_000_000n,
   });
 
   const response = await sdk.fetchTx({
     trade: quote.trade,
     sui_address: keypair.getPublicKey().toSuiAddress(),
-    gas_budget: 0.03e9, // optional default is 0.03 SUI
-    max_slippage_bps: 500, // optional default is 1%
+    gas_budget: 0.3e9, // optional default is 0.03 SUI
+    max_slippage_bps: 1000, // optional default is 1%
   });
   const pred = await safeCoinTx.checkTx({
     tx: response.transaction,
     coinInType: SUI_TYPE_ARG,
-    coinInAmount: 1_000_000_000n,
+    coinInAmount: 3_000_000_000n,
+    coinOutType: USDC_TYPE,
+    coinOutAmount: 100_000_000n,
+    checkObjectChanges: true,
   });
 
   console.log(pred);
