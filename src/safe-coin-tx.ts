@@ -17,6 +17,7 @@ export interface CheckTxArgs {
   coinOutType?: string;
   coinOutAmount?: bigint;
   checkObjectChanges?: boolean;
+  gasBudget?: bigint;
 }
 
 export class SafeCoinTx {
@@ -35,6 +36,7 @@ export class SafeCoinTx {
     coinOutType,
     coinOutAmount,
     checkObjectChanges = true,
+    gasBudget,
   }: CheckTxArgs) {
     invariant(coinInAmount > 0n, 'Coin in amount must be greater than 0');
     invariant(
@@ -53,6 +55,7 @@ export class SafeCoinTx {
       coinInAmount,
       coinOutType,
       coinOutAmount,
+      gasBudget,
     });
 
     if (checkObjectChanges) this.#verifyObjectChanges(result);
@@ -67,6 +70,7 @@ export class SafeCoinTx {
       coinInAmount,
       coinOutType,
       coinOutAmount,
+      gasBudget,
     }: Omit<CheckTxArgs, 'tx' | 'checkObjectChanges'>
   ) {
     coinInAmount = coinInAmount * -1n;
@@ -76,6 +80,8 @@ export class SafeCoinTx {
     const sender = normalizeSuiAddress(result.input.sender);
 
     const totalGasUsed = this.#calculateGasUsed(result);
+
+    if (gasBudget) invariant(totalGasUsed <= gasBudget, 'Gas budget exceeded');
 
     const balanceChangesMap = result.balanceChanges.reduce(
       (acc, change) => {
