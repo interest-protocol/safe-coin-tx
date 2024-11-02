@@ -14,7 +14,7 @@ export interface CheckTxArgs {
   tx: Transaction;
   coinInType: string;
   coinInAmount: bigint;
-  coinOutType?: string;
+  coinOutType: string;
   coinOutAmount?: bigint;
   checkObjectChanges?: boolean;
   gasBudget?: bigint;
@@ -122,15 +122,19 @@ export class SafeCoinTx {
         balanceChangesMap[coinInType] >= coinInAmount,
         'The amount of coin sold does not match the amount of coin taken'
       );
-      invariant(
-        suiChangeAmount >= totalGasUsed,
-        'The amount of gas used is too high'
-      );
+
+      if (coinOutType !== this.#suiCoinType)
+        invariant(
+          suiChangeAmount >= totalGasUsed,
+          'The amount of gas used is too high'
+        );
     }
 
     if (coinOutType && coinOutAmount) {
+      const gasCost =
+        coinOutType === this.#suiCoinType ? totalGasUsed * -1n : 0n;
       invariant(
-        balanceChangesMap[coinOutType] >= coinOutAmount,
+        balanceChangesMap[coinOutType] >= coinOutAmount - gasCost,
         'We expected to receive more coins'
       );
     }
