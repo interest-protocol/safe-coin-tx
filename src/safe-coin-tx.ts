@@ -35,36 +35,29 @@ export class SafeCoinTx {
     coinOutType,
     coinOutAmount,
     checkObjectChanges = true,
-  }: CheckTxArgs): Promise<boolean> {
-    try {
-      invariant(coinInAmount > 0n, 'Coin in amount must be greater than 0');
-      invariant(
-        !coinOutAmount || coinOutAmount > 0n,
-        'Coin out amount must be greater than 0'
-      );
+  }: CheckTxArgs) {
+    invariant(coinInAmount > 0n, 'Coin in amount must be greater than 0');
+    invariant(
+      !coinOutAmount || coinOutAmount > 0n,
+      'Coin out amount must be greater than 0'
+    );
 
-      const result = await this.#client.dryRunTransactionBlock({
-        transactionBlock: await tx.build({ client: this.#client }),
-      });
+    const result = await this.#client.dryRunTransactionBlock({
+      transactionBlock: await tx.build({ client: this.#client }),
+    });
 
-      invariant(
-        result.effects.status.status === 'success',
-        'Transaction failed'
-      );
+    invariant(result.effects.status.status === 'success', 'Transaction failed');
 
-      this.#verifyCoinBalanceChanges(result, {
-        coinInType,
-        coinInAmount,
-        coinOutType,
-        coinOutAmount,
-      });
+    this.#verifyCoinBalanceChanges(result, {
+      coinInType,
+      coinInAmount,
+      coinOutType,
+      coinOutAmount,
+    });
 
-      if (checkObjectChanges) this.#verifyObjectChanges(result);
+    if (checkObjectChanges) this.#verifyObjectChanges(result);
 
-      return true;
-    } catch {
-      return false;
-    }
+    return result;
   }
 
   #verifyCoinBalanceChanges(
