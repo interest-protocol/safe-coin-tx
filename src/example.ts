@@ -54,12 +54,12 @@ const hop_api_options: HopApiOptions = {
 
 const sdk = new HopApi(getFullnodeUrl('mainnet'), hop_api_options);
 
-const USDC_TYPE =
+const DEEP_TYPE =
   '0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP';
 (async () => {
   const quote = await sdk.fetchQuote({
     token_in: SUI_TYPE_ARG,
-    token_out: USDC_TYPE,
+    token_out: DEEP_TYPE,
     amount_in: 3_000_000_000n,
   });
 
@@ -73,7 +73,7 @@ const USDC_TYPE =
     tx: response.transaction,
     coinInType: SUI_TYPE_ARG,
     coinInAmount: 3_000_000_000n,
-    coinOutType: USDC_TYPE,
+    coinOutType: DEEP_TYPE,
     coinOutAmount: 100_000_000n,
     checkObjectChanges: true,
   });
