@@ -4,14 +4,6 @@ import { normalizeSuiAddress } from '@mysten/sui/utils';
 export const suiClient = new SuiClient({ url: getFullnodeUrl('mainnet') });
 import util from 'util';
 
-export const isOwned = (owner: unknown) => {
-  if (typeof owner !== 'object' || owner === null) return false;
-
-  if ('AddressOwner' in owner) return true;
-
-  return false;
-};
-
 export const isOwnedByAddress = (owner: unknown, address: string) => {
   if (typeof owner !== 'object' || owner === null) return false;
 
