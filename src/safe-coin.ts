@@ -20,9 +20,6 @@ export interface CheckTxArgs {
   checkObjectChanges?: boolean;
 }
 
-export const log = (x: unknown) =>
-  console.log(util.inspect(x, false, null, true));
-
 export class SafeCoinTx {
   #client: SuiClient;
   #suiCoinType = normalizeStructTag(SUI_TYPE_ARG);
@@ -50,7 +47,7 @@ export class SafeCoinTx {
         'Transaction failed'
       );
 
-      this.#verifyCoinBalanceChange(result, {
+      this.#verifyCoinBalanceChanges(result, {
         coinInType,
         coinInAmount,
         coinOutType,
@@ -65,7 +62,7 @@ export class SafeCoinTx {
     }
   }
 
-  #verifyCoinBalanceChange(
+  #verifyCoinBalanceChanges(
     result: DryRunTransactionBlockResponse,
     {
       coinInType,
@@ -121,11 +118,7 @@ export class SafeCoinTx {
         'Too much coin was sold'
       );
       invariant(
-        balanceChangesMap[this.#suiCoinType] >= totalGasUsed,
-        'Too much gas was used'
-      );
-      invariant(
-        totalGasUsed >= suiChangeAmount,
+        suiChangeAmount >= totalGasUsed,
         'The amount of gas used is too high'
       );
     }

@@ -8,7 +8,6 @@ import { suiClient } from './utils';
 import { Transaction } from '@mysten/sui/transactions';
 import { HopApi, HopApiOptions } from '@hop.ag/sdk';
 
-import { SUI_TYPE_ARG } from '@mysten/sui/utils';
 import { getFullnodeUrl } from '@mysten/sui/client';
 
 dotenv.config();
@@ -26,8 +25,6 @@ export const executeTx = async (tx: Transaction) => {
     options: { showEffects: true },
     requestType: 'WaitForLocalExecution',
   });
-
-  console.log(5.2);
 
   // return if the tx hasn't succeed
   if (result.effects?.status?.status !== 'success') {
@@ -56,11 +53,15 @@ const sdk = new HopApi(getFullnodeUrl('mainnet'), hop_api_options);
 
 const DEEP_TYPE =
   '0xdeeb7a4662eec9f2f3def03fb937a663dddaa2e215b8078a284d026b7946c270::deep::DEEP';
+
+const USDC_TYPE =
+  '0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC';
+
 (async () => {
   const quote = await sdk.fetchQuote({
-    token_in: SUI_TYPE_ARG,
+    token_in: USDC_TYPE,
     token_out: DEEP_TYPE,
-    amount_in: 3_000_000_000n,
+    amount_in: 500_000n,
   });
 
   const response = await sdk.fetchTx({
@@ -71,10 +72,10 @@ const DEEP_TYPE =
   });
   const pred = await safeCoinTx.checkTx({
     tx: response.transaction,
-    coinInType: SUI_TYPE_ARG,
-    coinInAmount: 3_000_000_000n,
+    coinInType: USDC_TYPE,
+    coinInAmount: 500_000n,
     coinOutType: DEEP_TYPE,
-    coinOutAmount: 100_000_000n,
+    coinOutAmount: 9099089n,
     checkObjectChanges: true,
   });
 
