@@ -59,9 +59,9 @@ const USDC_TYPE =
 
 (async () => {
   const quote = await sdk.fetchQuote({
-    token_in: USDC_TYPE,
+    token_in: '0x2::sui::SUI',
     token_out: DEEP_TYPE,
-    amount_in: 500_000n,
+    amount_in: 2_000_000_000n,
   });
 
   const response = await sdk.fetchTx({
@@ -72,10 +72,8 @@ const USDC_TYPE =
   });
   const pred = await safeCoinTx.checkTx({
     tx: response.transaction,
-    coinInType: USDC_TYPE,
-    coinInAmount: 500_000n,
-    coinOutType: DEEP_TYPE,
-    coinOutAmount: 9099089n,
+    coinInType: '0x2::sui::SUI',
+    coinInAmount: 2_000_000_000n,
     checkObjectChanges: true,
   });
 

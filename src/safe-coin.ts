@@ -1,7 +1,6 @@
 import { SuiClient, DryRunTransactionBlockResponse } from '@mysten/sui/client';
 
 import { Transaction } from '@mysten/sui/transactions';
-import util from 'util';
 
 import {
   normalizeStructTag,
@@ -38,6 +37,12 @@ export class SafeCoinTx {
     checkObjectChanges = true,
   }: CheckTxArgs): Promise<boolean> {
     try {
+      invariant(coinInAmount > 0n, 'Coin in amount must be greater than 0');
+      invariant(
+        !coinOutAmount || coinOutAmount > 0n,
+        'Coin out amount must be greater than 0'
+      );
+
       const result = await this.#client.dryRunTransactionBlock({
         transactionBlock: await tx.build({ client: this.#client }),
       });
