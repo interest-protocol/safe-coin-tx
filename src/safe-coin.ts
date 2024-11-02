@@ -45,8 +45,6 @@ export class SafeCoinTx {
         transactionBlock: await tx.build({ client: this.#client }),
       });
 
-      log(result.effects.status);
-
       invariant(
         result.effects.status.status === 'success',
         'Transaction failed'
@@ -125,6 +123,10 @@ export class SafeCoinTx {
       invariant(
         balanceChangesMap[this.#suiCoinType] >= totalGasUsed,
         'Too much gas was used'
+      );
+      invariant(
+        totalGasUsed >= suiChangeAmount,
+        'The amount of gas used is too high'
       );
     }
 
