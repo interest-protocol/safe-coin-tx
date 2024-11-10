@@ -15,5 +15,13 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
     },
     ignores: ['./dist', './node_modules'],
+    overrides: [
+      {
+        files: ['./src/tests/**/*'],
+        env: {
+          jest: true,
+        },
+      },
+    ],
   }
 );

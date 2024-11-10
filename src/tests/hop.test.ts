@@ -1,10 +1,10 @@
-import { SafeCoinTx } from './safe-coin-tx';
+import { SafeCoinTx } from '../safe-coin-tx';
 import dotenv from 'dotenv';
 import invariant from 'tiny-invariant';
 
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
-import { suiClient } from './utils';
+import { suiClient } from '../utils';
 import { Transaction } from '@mysten/sui/transactions';
 import { HopApi, HopApiOptions } from '@hop.ag/sdk';
 
@@ -74,6 +74,7 @@ const USDC_TYPE =
     tx: response.transaction,
     coinInType: '0x2::sui::SUI',
     coinInAmount: 2_000_000_000n,
+    coinOutType: DEEP_TYPE,
     checkObjectChanges: true,
   });
 
