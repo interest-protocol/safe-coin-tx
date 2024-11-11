@@ -45,6 +45,7 @@ test('7k aggregator', async () => {
         1000n
       ),
       checkObjectChanges: true,
+      gasBudget: 100_000_000n,
     })
   ).resolves.not.toThrow();
 });

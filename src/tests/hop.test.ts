@@ -36,6 +36,7 @@ test('hop aggregator', async () => {
       coinOutType: DEEP_TYPE,
       coinOutAmount: getAmountWithSlippage(quote.amount_out_with_fee, 1000n),
       checkObjectChanges: true,
+      gasBudget: 100_000_000n,
     })
   ).resolves.not.toThrow();
 });
