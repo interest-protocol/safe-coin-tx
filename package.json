@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "example": "tsx ./src/example.ts",
-    "test": "jest"
+    "test": "jest --verbose false"
   },
   "keywords": [],
   "author": "",
