@@ -12,7 +12,7 @@ test('hop aggregator', async () => {
   const amountIn = 200_000_000n;
 
   const quote = await hopSdk.fetchQuote({
-    token_in: '0x2::sui::SUI',
+    token_in: SUI_TYPE_ARG,
     token_out: DEEP_TYPE,
     amount_in: amountIn,
   });
