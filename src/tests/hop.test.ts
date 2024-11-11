@@ -25,7 +25,7 @@ test('hop aggregator', async () => {
   });
 
   expect(quote.amount_out_with_fee).toBeGreaterThan(
-    getAmountWithSlippage(quote.amount_out_with_fee, 1000n)
+    getAmountWithSlippage(quote.amount_out_with_fee, 100n)
   );
 
   await expect(
