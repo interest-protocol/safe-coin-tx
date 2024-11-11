@@ -1,7 +1,5 @@
 import { SuiClient, DryRunTransactionBlockResponse } from '@mysten/sui/client';
 
-import { Transaction } from '@mysten/sui/transactions';
-
 import {
   normalizeStructTag,
   normalizeSuiAddress,
@@ -10,15 +8,7 @@ import {
 import invariant from 'tiny-invariant';
 import { suiClient, isOwnedByAddress } from './utils';
 
-export interface CheckTxArgs {
-  tx: Transaction;
-  coinInType: string;
-  coinInAmount: bigint;
-  coinOutType: string;
-  coinOutAmount?: bigint;
-  checkObjectChanges?: boolean;
-  gasBudget?: bigint;
-}
+import { DryRunArgs } from './safe-coin-ts.types';
 
 export class SafeCoinTx {
   #client: SuiClient;
@@ -29,7 +19,7 @@ export class SafeCoinTx {
     this.#client = client;
   }
 
-  async checkTx({
+  async dryRun({
     tx,
     coinInType,
     coinInAmount,
@@ -37,7 +27,7 @@ export class SafeCoinTx {
     coinOutAmount,
     checkObjectChanges = true,
     gasBudget,
-  }: CheckTxArgs) {
+  }: DryRunArgs) {
     invariant(coinInAmount > 0n, 'Coin in amount must be greater than 0');
     invariant(
       !coinOutAmount || coinOutAmount > 0n,
@@ -71,7 +61,7 @@ export class SafeCoinTx {
       coinOutType,
       coinOutAmount,
       gasBudget,
-    }: Omit<CheckTxArgs, 'tx' | 'checkObjectChanges'>
+    }: Omit<DryRunArgs, 'tx' | 'checkObjectChanges'>
   ) {
     coinInAmount = coinInAmount * -1n;
 

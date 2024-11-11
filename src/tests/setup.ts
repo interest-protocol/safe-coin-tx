@@ -1,8 +1,8 @@
-import { SafeCoinTx } from '../safe-coin-tx';
+import { SafeCoinTx } from '../sdk/safe-coin-tx';
 import dotenv from 'dotenv';
 import invariant from 'tiny-invariant';
 
-import { getFullnodeUrl } from '@mysten/sui/client';
+import { getFullnodeUrl, SuiClient } from '@mysten/sui/client';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 
 import { HopApi, HopApiOptions } from '@hop.ag/sdk';
@@ -14,6 +14,8 @@ invariant(process.env.KEY && process.env.HOP_API_KEY, 'Private key missing');
 export const keypair = Ed25519Keypair.fromSecretKey(
   Uint8Array.from(Buffer.from(process.env.KEY, 'base64')).slice(1)
 );
+
+export const suiClient = new SuiClient({ url: getFullnodeUrl('mainnet') });
 
 export const safeCoinTx = new SafeCoinTx();
 

@@ -29,7 +29,7 @@ test('hop aggregator', async () => {
   );
 
   await expect(
-    safeCoinTx.checkTx({
+    safeCoinTx.dryRun({
       tx: response.transaction,
       coinInType: SUI_TYPE_ARG,
       coinInAmount: amountIn,
