@@ -41,9 +41,9 @@ export class SafeCoinTx {
     invariant(result.effects.status.status === 'success', 'Transaction failed');
 
     this.#verifyCoinBalanceChanges(result, {
-      coinInType,
+      coinInType: normalizeStructTag(coinInType),
       coinInAmount,
-      coinOutType,
+      coinOutType: normalizeStructTag(coinOutType),
       coinOutAmount,
       gasBudget,
     });
@@ -96,7 +96,8 @@ export class SafeCoinTx {
     const isCoinSoldSui = coinInType === this.#suiCoinType;
 
     invariant(
-      negativeAmounts.length === (isCoinSoldSui ? 1 : 2),
+      negativeAmounts.length === 1 ||
+        negativeAmounts.length === (isCoinSoldSui ? 1 : 2),
       'Too many coins were sold'
     );
 
@@ -123,6 +124,7 @@ export class SafeCoinTx {
     if (coinOutType && coinOutAmount) {
       const gasCost =
         coinOutType === this.#suiCoinType ? totalGasUsed * -1n : 0n;
+
       invariant(
         balanceChangesMap[coinOutType] >= coinOutAmount - gasCost,
         'We expected to receive more coins'
